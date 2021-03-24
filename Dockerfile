@@ -18,6 +18,10 @@ RUN apt-get update && apt-get install -y \
     lsb-release \
   && rm -rf /var/lib/apt/lists/*
 
+# Install R related libs
+
+RUN apt-get install -y -q r-base r-base-dev gdebi-core libapparmor1 supervisor 
+
 # https://wiki.debian.org/Locale#Manually
 RUN sed -i "s/# en_US.UTF-8/en_US.UTF-8/" /etc/locale.gen \
   && locale-gen
@@ -45,7 +49,7 @@ RUN codename=$(lsb_release -c -s) && \
 	apt-get update && apt-get install -y r-base r-base-dev
  
 # install RStudio
-RUN wget -O /tmp/rstudio.deb http://download2.rstudio.org/rstudio-server-0.99.902-amd64.deb && \
+RUN curl -JLO /tmp/rstudio.deb http://download2.rstudio.org/rstudio-server-0.99.902-amd64.deb && \
     gdebi -n /tmp/rstudio.deb && \
     rm /tmp/rstudio.deb
  
@@ -61,7 +65,8 @@ ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
  #
 
 # Expose the RStudio Server port
-EXPOSE 8787
+EXPOSE 8080
+EXPOSE 8888
 
 # This way, if someone sets $DOCKER_USER, docker-exec will still work as
 # the uid will remain the same. note: only relevant if -u isn't passed to
