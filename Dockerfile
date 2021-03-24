@@ -20,7 +20,8 @@ RUN apt-get update && apt-get install -y \
 
 # Install R related libs
 
-RUN apt-get install -y r-base \ 
+RUN apt-get update && apt-get install -y \
+	r-base \ 
 	r-base-dev \
 	gdebi-core \
 	libapparmor1 \
