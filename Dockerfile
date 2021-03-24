@@ -20,7 +20,11 @@ RUN apt-get update && apt-get install -y \
 
 # Install R related libs
 
-RUN apt-get install -y -q r-base r-base-dev gdebi-core libapparmor1 supervisor 
+RUN apt-get install -y r-base \ 
+	r-base-dev \
+	gdebi-core \
+	libapparmor1 \
+	supervisor 
 
 # https://wiki.debian.org/Locale#Manually
 RUN sed -i "s/# en_US.UTF-8/en_US.UTF-8/" /etc/locale.gen \
