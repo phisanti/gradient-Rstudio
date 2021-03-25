@@ -20,6 +20,8 @@ RUN apt-get update && apt-get install -y \
 
 # Install R related libs
 
+ENV DEBIAN_FRONTEND=noninteractive 
+
 RUN apt-get update && apt-get install -y \
 	r-base \ 
 	r-base-dev \
