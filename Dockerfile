@@ -50,13 +50,13 @@ RUN ARCH="$(dpkg --print-architecture)" && \
     printf "user: coder\ngroup: coder\n" > /etc/fixuid/config.yml
 
 # install RStudio
-RUN curl -JLO /tmp/rstudio.deb http://download2.rstudio.org/rstudio-server-0.99.902-amd64.deb && \
-    gdebi -n /tmp/rstudio.deb && \
-    rm /tmp/rstudio.deb
+#RUN curl -JLO /tmp/rstudio.deb http://download2.rstudio.org/rstudio-server-0.99.902-amd64.deb && \
+#    gdebi -n /tmp/rstudio.deb && \
+#    rm /tmp/rstudio.deb
  
-RUN (adduser --disabled-password --gecos "" guest && echo "guest:guest"|chpasswd)
-RUN mkdir -p /var/log/supervisor
-ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+#RUN (adduser --disabled-password --gecos "" guest && echo "guest:guest"|chpasswd)
+#RUN mkdir -p /var/log/supervisor
+#ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
  
  #
  #
