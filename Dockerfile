@@ -50,14 +50,12 @@ RUN ARCH="$(dpkg --print-architecture)" && \
     printf "user: coder\ngroup: coder\n" > /etc/fixuid/config.yml
 
 # install RStudio
-RUN curl -O https://s3.amazonaws.com/rstudio-ide-build/session/${RSP_PLATFORM}/rsp-session-${RSP_PLATFORM}-${RSP_VERSION}.tar.gz && \
-    mkdir -p /usr/lib/rstudio-server && \
-    tar -zxvf ./rsp-session-${RSP_PLATFORM}-${RSP_VERSION}.tar.gz -C /usr/lib/rstudio-server/ && \
-    mv /usr/lib/rstudio-server/rsp-session*/* /usr/lib/rstudio-server/ && \
-    rm -rf /usr/lib/rstudio-server/rsp-session* && \
-    rm -f ./rsp-session-${RSP_PLATFORM}-${RSP_VERSION}.tar.gz && \
-    # write session version to a file
-    echo "${RSP_VERSION}" > /usr/lib/rstudio-server/SESSION_VERSION
+
+ARG RSTUDIO_SERVER_VERSION = 1.4.1106
+ARG OS = bionic
+RUN curl -O https://download2.rstudio.org/server/{$OS}/amd64/rstudio-server-{$RSTUDIO_SERVER_VERSION}-amd64.deb && \ 
+	gdebi rstudio-server-{$RSTUDIO_SERVER_VERSION}-amd64.deb
+	
 
 #RUN (adduser --disabled-password --gecos "" guest && echo "guest:guest"|chpasswd)
 #RUN mkdir -p /var/log/supervisor
