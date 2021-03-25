@@ -48,13 +48,7 @@ RUN ARCH="$(dpkg --print-architecture)" && \
     chmod 4755 /usr/local/bin/fixuid && \
     mkdir -p /etc/fixuid && \
     printf "user: coder\ngroup: coder\n" > /etc/fixuid/config.yml
- 
-# install latest R Base 
-RUN codename=$(lsb_release -c -s) && \
-	echo "deb http://freestatistics.org/cran/bin/linux/ubuntu $codename/" | tee -a /etc/apt/sources.list > /dev/null && \
-	apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9 && \
-	apt-get update && apt-get install -y r-base r-base-dev
- 
+
 # install RStudio
 RUN curl -JLO /tmp/rstudio.deb http://download2.rstudio.org/rstudio-server-0.99.902-amd64.deb && \
     gdebi -n /tmp/rstudio.deb && \
