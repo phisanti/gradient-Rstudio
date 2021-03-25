@@ -50,9 +50,9 @@ RUN ARCH="$(dpkg --print-architecture)" && \
     printf "user: coder\ngroup: coder\n" > /etc/fixuid/config.yml
 
 # install RStudio
-#RUN curl -JLO /tmp/rstudio.deb http://download2.rstudio.org/rstudio-server-0.99.902-amd64.deb && \
-#    gdebi -n /tmp/rstudio.deb && \
-#    rm /tmp/rstudio.deb
+RUN curl -JLO /tmp/rstudio.deb http://download2.rstudio.org/rstudio-server-0.99.902-amd64.deb && \
+    gdebi -n /tmp/rstudio.deb && \
+    rm /tmp/rstudio.deb
  
 #RUN (adduser --disabled-password --gecos "" guest && echo "guest:guest"|chpasswd)
 #RUN mkdir -p /var/log/supervisor
@@ -68,6 +68,8 @@ RUN ARCH="$(dpkg --print-architecture)" && \
 # Expose the RStudio Server port
 EXPOSE 8080
 EXPOSE 8888
+EXPOSE 8889
+EXPOSE 8890
 
 # This way, if someone sets $DOCKER_USER, docker-exec will still work as
 # the uid will remain the same. note: only relevant if -u isn't passed to
@@ -75,4 +77,7 @@ EXPOSE 8888
 USER 1000
 ENV USER=coder
 
-CMD ["/usr/bin/supervisord"]
+# Entrypoint
+COPY run.sh /run.sh
+
+ENTRYPOINT ["/run.sh"]
