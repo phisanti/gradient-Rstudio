@@ -55,7 +55,7 @@ RUN ARCH="$(dpkg --print-architecture)" && \
 # Note, Ubuntu distro = bionic
 RUN curl -O https://download2.rstudio.org/server/bionic/amd64/rstudio-server-1.4.1106-amd64.deb && \ 
 	gdebi rstudio-server-1.4.1106-amd64.deb
-	
+RUN echo $(whereis rserver)
 #RUN (adduser --disabled-password --gecos "" guest && echo "guest:guest"|chpasswd)
 #RUN mkdir -p /var/log/supervisor
 #ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
