@@ -51,12 +51,11 @@ RUN ARCH="$(dpkg --print-architecture)" && \
 
 # install RStudio
 
-ARG RSTUDIO_SERVER_VERSION = 1.4.1106
-ARG OS = bionic
-RUN curl -O https://download2.rstudio.org/server/{$OS}/amd64/rstudio-server-{$RSTUDIO_SERVER_VERSION}-amd64.deb && \ 
-	gdebi rstudio-server-{$RSTUDIO_SERVER_VERSION}-amd64.deb
+# Note, Rserver = 	v1.4.1106
+# Note, Ubuntu distro = bionic
+RUN curl -O https://download2.rstudio.org/server/bionic/amd64/rstudio-server-1.4.1106-amd64.deb && \ 
+	gdebi rstudio-server-1.4.1106-amd64.deb
 	
-
 #RUN (adduser --disabled-password --gecos "" guest && echo "guest:guest"|chpasswd)
 #RUN mkdir -p /var/log/supervisor
 #ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
