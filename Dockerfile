@@ -50,10 +50,15 @@ RUN ARCH="$(dpkg --print-architecture)" && \
     printf "user: coder\ngroup: coder\n" > /etc/fixuid/config.yml
 
 # install RStudio
-RUN curl -JLO /tmp/rstudio.deb http://download2.rstudio.org/rstudio-server-0.99.902-amd64.deb && \
-    gdebi -n /tmp/rstudio.deb && \
-    rm /tmp/rstudio.deb
- 
+RUN curl -O https://s3.amazonaws.com/rstudio-ide-build/session/${RSP_PLATFORM}/rsp-session-${RSP_PLATFORM}-${RSP_VERSION}.tar.gz && \
+    mkdir -p /usr/lib/rstudio-server && \
+    tar -zxvf ./rsp-session-${RSP_PLATFORM}-${RSP_VERSION}.tar.gz -C /usr/lib/rstudio-server/ && \
+    mv /usr/lib/rstudio-server/rsp-session*/* /usr/lib/rstudio-server/ && \
+    rm -rf /usr/lib/rstudio-server/rsp-session* && \
+    rm -f ./rsp-session-${RSP_PLATFORM}-${RSP_VERSION}.tar.gz && \
+    # write session version to a file
+    echo "${RSP_VERSION}" > /usr/lib/rstudio-server/SESSION_VERSION
+
 #RUN (adduser --disabled-password --gecos "" guest && echo "guest:guest"|chpasswd)
 #RUN mkdir -p /var/log/supervisor
 #ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
