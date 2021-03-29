@@ -1,85 +1,54 @@
+  
 FROM nvidia/cuda:11.2.2-base-ubuntu20.04
 
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-    curl \
-    ca-certificates \
-    dumb-init \
-    htop \
-    sudo \
-    gcc \
-    bzip2 \
-    libx11-6 \
-    locales \
-    man \
-    git \
-    procps \
-    openssh-client \
-    lsb-release \
-  && rm -rf /var/lib/apt/lists/*
+ENV CUDA_VERSION=11.1
+ENV NCCL_VERSION=2.7.8
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility
+ENV NVIDIA_REQUIRE_CUDA=cuda>=11.1 brand=tesla,driver>=418,driver<419 brand=tesla,driver>=440,driver<441 brand=tesla,driver>=450,driver<451
+ENV CUDA_HOME=/usr/local/cuda
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CUDA_HOME/lib64:$CUDA_HOME/extras/CUPTI/lib64:$CUDA_HOME/lib64/libnvblas.so:
+ENV LIBRARY_PATH=/usr/local/cuda/lib64/stubs
+ENV NVBLAS_CONFIG_FILE=/etc/nvblas.conf
+ENV WORKON_HOME=/opt/venv
+ENV PYTHON_VENV_PATH=/opt/venv/reticulate
+ENV RETICULATE_MINICONDA_ENABLED=FALSE
+ENV PATH=${PYTHON_VENV_PATH}/bin:${CUDA_HOME}/bin:/usr/local/nviida/bin:${PATH}:/usr/local/texlive/bin/x86_64-linux
 
-# Install R related libs
+ENV S6_VERSION=v2.0.0.1
+ENV RSTUDIO_VERSION=1.3.959
+ENV PATH=/usr/lib/rstudio-server/bin:$PATH
 
+ENV R_VERSION=4.0.4
+ENV TERM=xterm
+ENV LC_ALL=en_US.UTF-8
+ENV LANG=en_US.UTF-8
+ENV R_HOME=/usr/local/lib/R
+ENV CRAN=https://packagemanager.rstudio.com/all/__linux__/focal/latest
+ENV TZ=Etc/UTC
+
+ARG UBUNTU_VERSION=focal 
+ARG R_HOME=/usr/lib/R
+ARG DEBIAN_FRONTEND=noninteractive
 ENV DEBIAN_FRONTEND=noninteractive 
 
-RUN apt-get update && apt-get install -y \
-	r-base \ 
-	r-base-dev \
-	gdebi-core \
-	libapparmor1 \
-	supervisor 
+COPY installers /installers
+RUN /installers/install_R.sh
 
-# https://wiki.debian.org/Locale#Manually
-RUN sed -i "s/# en_US.UTF-8/en_US.UTF-8/" /etc/locale.gen \
-  && locale-gen
-ENV LANG=en_US.UTF-8
+# R_cuda cofig
+#COPY config_R_cuda.sh /tmp/config_R_cuda.sh
+#RUN config_R_cuda.sh
 
-# Create project directory
-RUN mkdir /projects
+# Rstudio
+RUN /installers/install_rstudio.sh
 
-RUN adduser --gecos '' --disabled-password coder && \
-  echo "coder ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/nopasswd
+# Python
+# RUN /installers/install_python.sh
 
-# Install fixuid
+# Pandoc
+RUN /installers/install_pandoc.sh
 
-RUN ARCH="$(dpkg --print-architecture)" && \
-    curl -fsSL "https://github.com/boxboat/fixuid/releases/download/v0.4.1/fixuid-0.4.1-linux-$ARCH.tar.gz" | tar -C /usr/local/bin -xzf - && \
-    chown root:root /usr/local/bin/fixuid && \
-    chmod 4755 /usr/local/bin/fixuid && \
-    mkdir -p /etc/fixuid && \
-    printf "user: coder\ngroup: coder\n" > /etc/fixuid/config.yml
-
-# install RStudio
-
-# Note, Rserver = 	v1.4.1106
-# Note, Ubuntu distro = bionic
-RUN curl -O https://download2.rstudio.org/server/bionic/amd64/rstudio-server-1.4.1106-amd64.deb && \ 
-	gdebi rstudio-server-1.4.1106-amd64.deb
-RUN echo $(whereis rserver)
-#RUN (adduser --disabled-password --gecos "" guest && echo "guest:guest"|chpasswd)
-#RUN mkdir -p /var/log/supervisor
-#ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
- 
- #
- #
- #
- #
- #
- #
-
-# Expose the RStudio Server port
-EXPOSE 8080
 EXPOSE 8888
-EXPOSE 8889
-EXPOSE 8890
+EXPOSE 8787
 
-# This way, if someone sets $DOCKER_USER, docker-exec will still work as
-# the uid will remain the same. note: only relevant if -u isn't passed to
-# docker-run.
-USER 1000
-ENV USER=coder
-
-# Entrypoint
-COPY run.sh /run.sh
-
-ENTRYPOINT ["/run.sh"]
+CMD ["/init"]
