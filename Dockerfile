@@ -51,4 +51,4 @@ RUN chmod +x /installers/install_pandoc.sh
 EXPOSE 8888
 EXPOSE 8787
 
-ENTRYPOINT ["/run.sh"]
+ENTRYPOINT ["chmod +x /run.sh"]
