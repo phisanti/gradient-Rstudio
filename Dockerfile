@@ -51,4 +51,4 @@ RUN /installers/install_pandoc.sh
 EXPOSE 8888
 EXPOSE 8787
 
-CMD ["/init"]
+ENTRYPOINT ["/run.sh"]
