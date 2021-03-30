@@ -51,4 +51,10 @@ RUN /installers/install_pandoc.sh
 EXPOSE 8888
 EXPOSE 8787
 
+
 CMD ["/init"]
+# CMD ["/usr/bin/supervisord"]
+#CMD ["/usr/lib/rstudio-server/bin/rserver", "--www-address=0.0.0.0", "--www-port=8787:8888", "--server-daemonize=0"]
+#CMD ["/usr/lib/rstudio-server/bin/rserver --server-daemonize 0 --www-port 8787:8888"]
+#/usr/lib/rstudio-server/bin/rserver --www-address=0.0.0.0 --www-port=8787:8888 --server-daemonize=0
+#"/bin/bash", 

@@ -40,21 +40,15 @@ if [ -z "$1" ];
   else RSTUDIO_VERSION_ARG=$1;
 fi
 
-if [ -z "$RSTUDIO_VERSION_ARG" ] || [ "$RSTUDIO_VERSION_ARG" = "latest" ]; then
-    DOWNLOAD_VERSION=$(wget -qO - https://rstudio.com/products/rstudio/download-server/debian-ubuntu/ | grep -oP "(?<=rstudio-server-)[0-9]\.[0-9]\.[0-9]+" | sort | tail -n 1)
-elif [ "$RSTUDIO_VERSION_ARG" = "preview" ]; then
-    DOWNLOAD_VERSION=$(wget -qO - https://rstudio.com/products/rstudio/download/preview/ | grep -oP "(?<=rstudio-server-)[0-9]\.[0-9]\.[0-9]+" | sort | tail -n 1)
-elif [ "$RSTUDIO_VERSION_ARG" = "daily" ]; then
-    DOWNLOAD_VERSION=$(wget -qO - https://dailies.rstudio.com/rstudioserver/oss/ubuntu/x86_64/ | grep -oP "(?<=rstudio-server-)[0-9]\.[0-9]\.[0-9]+" | sort | tail -n 1)
-else
-    DOWNLOAD_VERSION=${RSTUDIO_VERSION_ARG}
-fi
+DOWNLOAD_VERSION=$(wget -qO - https://rstudio.com/products/rstudio/download-server/debian-ubuntu/ | grep -oP "(?<=rstudio-server-)[0-9]\.[0-9]\.[0-9]+" | sort | tail -n 1)
 
 ## UBUNTU_VERSION is not generally valid: only works for xenial and bionic, not other releases,
 ## and does not understand numeric versions. (2020-04-15)
 #RSTUDIO_URL="https://s3.amazonaws.com/rstudio-ide-build/server/${UBUNTU_VERSION}/amd64/rstudio-server-${DOWNLOAD_VERSION}-amd64.deb"
 ## hardwire bionic for now...
 RSTUDIO_URL="https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64/rstudio-server-${DOWNLOAD_VERSION}-amd64.deb"
+
+wget "${RSTUDIO_URL}"
 
 dpkg -i rstudio-server-*-amd64.deb
 rm rstudio-server-*-amd64.deb
