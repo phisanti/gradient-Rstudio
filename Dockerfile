@@ -33,20 +33,20 @@ ARG DEBIAN_FRONTEND=noninteractive
 ENV DEBIAN_FRONTEND=noninteractive 
 
 COPY installers /installers
-RUN /installers/install_R.sh
+RUN chmod +x /installers/install_R.sh
 
 # R_cuda cofig
 #COPY config_R_cuda.sh /tmp/config_R_cuda.sh
 #RUN config_R_cuda.sh
 
 # Rstudio
-RUN /installers/install_rstudio.sh
+RUN chmod +x /installers/install_rstudio.sh
 
 # Python
 # RUN /installers/install_python.sh
 
 # Pandoc
-RUN /installers/install_pandoc.sh
+RUN chmod +x /installers/install_pandoc.sh
 
 EXPOSE 8888
 EXPOSE 8787
