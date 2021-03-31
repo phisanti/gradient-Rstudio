@@ -33,24 +33,25 @@ ARG DEBIAN_FRONTEND=noninteractive
 ENV DEBIAN_FRONTEND=noninteractive 
 
 COPY installers /installers
-RUN /installers/install_R.sh
+RUN chmod +x /installers/install_R.sh
 
 # R_cuda cofig
 #COPY config_R_cuda.sh /tmp/config_R_cuda.sh
 #RUN config_R_cuda.sh
 
 # Rstudio
-RUN /installers/install_rstudio.sh
+RUN chmod +x /installers/install_rstudio.sh
 
 # Python
 # RUN /installers/install_python.sh
 
 # Pandoc
-RUN /installers/install_pandoc.sh
+RUN chmod +x /installers/install_pandoc.sh
 
 EXPOSE 8888
 EXPOSE 8787
 
+<<<<<<< HEAD
 
 CMD ["/init"]
 # CMD ["/usr/bin/supervisord"]
@@ -58,3 +59,6 @@ CMD ["/init"]
 #CMD ["/usr/lib/rstudio-server/bin/rserver --server-daemonize 0 --www-port 8787:8888"]
 #/usr/lib/rstudio-server/bin/rserver --www-address=0.0.0.0 --www-port=8787:8888 --server-daemonize=0
 #"/bin/bash", 
+=======
+ENTRYPOINT ["chmod +x /run.sh"]
+>>>>>>> 497a09b9925908f233b5993944f4c387c781ab7d
