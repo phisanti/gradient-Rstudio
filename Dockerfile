@@ -12,7 +12,7 @@ ENV LIBRARY_PATH=/usr/local/cuda/lib64/stubs
 ENV NVBLAS_CONFIG_FILE=/etc/nvblas.conf
 ENV WORKON_HOME=/opt/venv
 ENV PYTHON_VENV_PATH=/opt/venv/reticulate
-ENV RETICULATE_MINICONDA_ENABLED=FALSE
+ENV RETICULATE_MINICONDA_ENABLED=TRUE
 ENV PATH=${PYTHON_VENV_PATH}/bin:${CUDA_HOME}/bin:/usr/local/nviida/bin:${PATH}:/usr/local/texlive/bin/x86_64-linux
 
 ENV S6_VERSION=v2.0.0.1
@@ -22,7 +22,6 @@ ENV PATH=/usr/lib/rstudio-server/bin:$PATH
 ENV R_VERSION=4.0.4
 ENV TERM=xterm
 ENV LC_ALL=en_US.UTF-8
-ENV LANG=en_US.UTF-8
 ENV R_HOME=/usr/local/lib/R
 ENV CRAN=https://packagemanager.rstudio.com/all/__linux__/focal/latest
 ENV TZ=Etc/UTC
@@ -32,33 +31,59 @@ ARG R_HOME=/usr/lib/R
 ARG DEBIAN_FRONTEND=noninteractive
 ENV DEBIAN_FRONTEND=noninteractive 
 
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    ca-certificates \
+    dumb-init \
+    htop \
+    sudo \
+    gcc \
+    bzip2 \
+    libx11-6 \
+    locales \
+    man \
+    git \
+    procps \
+    openssh-client \
+    lsb-release \
+  && rm -rf /var/lib/apt/lists/*
+
+
+RUN sed -i "s/# en_US.UTF-8/en_US.UTF-8/" /etc/locale.gen \
+    && locale-gen
+
+ENV LANG=en_US.UTF-8
+RUN adduser --gecos '' --disabled-password coder && \
+    echo "coder ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/nopasswd
+
+RUN ARCH="$(dpkg --print-architecture)" && \
+    curl -fsSL "https://github.com/boxboat/fixuid/releases/download/v0.4.1/fixuid-0.4.1-linux-$ARCH.tar.gz" | tar -C /usr/local/bin -xzf - && \
+    chown root:root /usr/local/bin/fixuid && \
+    chmod 4755 /usr/local/bin/fixuid && \
+    mkdir -p /etc/fixuid && \
+    printf "user: coder\ngroup: coder\n" > /etc/fixuid/config.yml
+
 COPY installers /installers
-RUN chmod +x /installers/install_R.sh
+COPY entrypoint.sh /usr/bin/entrypoint.sh
+
+RUN /installers/install_R.sh
 
 # R_cuda cofig
 #COPY config_R_cuda.sh /tmp/config_R_cuda.sh
 #RUN config_R_cuda.sh
 
 # Rstudio
-RUN chmod +x /installers/install_rstudio.sh
-
-# Python
-# RUN /installers/install_python.sh
+RUN /installers/install_rstudio.sh
 
 # Pandoc
-RUN chmod +x /installers/install_pandoc.sh
+RUN /installers/install_pandoc.sh
 
 EXPOSE 8888
 EXPOSE 8787
 
-<<<<<<< HEAD
+#USER 1000
+#ENV USER=coder
+COPY run_simple.sh /usr/run_simple.sh
 
-CMD ["/init"]
-# CMD ["/usr/bin/supervisord"]
-#CMD ["/usr/lib/rstudio-server/bin/rserver", "--www-address=0.0.0.0", "--www-port=8787:8888", "--server-daemonize=0"]
-#CMD ["/usr/lib/rstudio-server/bin/rserver --server-daemonize 0 --www-port 8787:8888"]
-#/usr/lib/rstudio-server/bin/rserver --www-address=0.0.0.0 --www-port=8787:8888 --server-daemonize=0
-#"/bin/bash", 
-=======
-ENTRYPOINT ["chmod +x /run.sh"]
->>>>>>> 497a09b9925908f233b5993944f4c387c781ab7d
+CMD ["bash","/usr/run_simple.sh"]

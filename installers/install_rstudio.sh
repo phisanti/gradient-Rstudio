@@ -4,7 +4,6 @@ set -e
 apt-get update
 apt-get install -y --no-install-recommends \
     file \
-    git \
     libapparmor1 \
     libgc1c2 \
     libclang-dev \
@@ -13,12 +12,8 @@ apt-get install -y --no-install-recommends \
     libobjc4 \
     libssl-dev \
     libpq5 \
-    lsb-release \
     psmisc \
-    procps \
-    python-setuptools \
-    sudo \
-    wget
+    python-setuptools 
 
 rm -rf /var/lib/apt/lists/*
 

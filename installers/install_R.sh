@@ -12,7 +12,6 @@ echo "deb https://cloud.r-project.org/bin/linux/ubuntu ${UBUNTU_VERSION}-cran40/
       less \
       littler \
       libopenblas-base \
-      locales \
       r-base-dev \
       vim-tiny \
       wget && \
