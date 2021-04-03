@@ -67,17 +67,17 @@ RUN ARCH="$(dpkg --print-architecture)" && \
 COPY installers /installers
 COPY entrypoint.sh /usr/bin/entrypoint.sh
 
-RUN /installers/install_R.sh
+RUN bash /installers/install_R.sh
 
 # R_cuda cofig
 #COPY config_R_cuda.sh /tmp/config_R_cuda.sh
 #RUN config_R_cuda.sh
 
 # Rstudio
-RUN /installers/install_rstudio.sh
+RUN bash /installers/install_rstudio.sh
 
 # Pandoc
-RUN /installers/install_pandoc.sh
+RUN bash /installers/install_pandoc.sh
 
 EXPOSE 8888
 EXPOSE 8787
