@@ -1,7 +1,7 @@
   
 FROM nvidia/cuda:11.2.2-base-ubuntu20.04
 
-ENV CUDA_VERSION=11.1
+ENV CUDA_VERSION=11.2.2
 ENV NCCL_VERSION=2.7.8
 ENV NVIDIA_VISIBLE_DEVICES=all
 ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility
@@ -54,15 +54,15 @@ RUN sed -i "s/# en_US.UTF-8/en_US.UTF-8/" /etc/locale.gen \
     && locale-gen
 
 ENV LANG=en_US.UTF-8
-RUN adduser --gecos '' --disabled-password coder && \
-    echo "coder ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/nopasswd
+RUN adduser --gecos '' --disabled-password rstudio && \
+    echo "rstudio ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/nopasswd
 
 RUN ARCH="$(dpkg --print-architecture)" && \
     curl -fsSL "https://github.com/boxboat/fixuid/releases/download/v0.4.1/fixuid-0.4.1-linux-$ARCH.tar.gz" | tar -C /usr/local/bin -xzf - && \
     chown root:root /usr/local/bin/fixuid && \
     chmod 4755 /usr/local/bin/fixuid && \
     mkdir -p /etc/fixuid && \
-    printf "user: coder\ngroup: coder\n" > /etc/fixuid/config.yml
+    printf "user: rstudio\ngroup: rstudio\n" > /etc/fixuid/config.yml
 
 COPY installers /installers
 COPY entrypoint.sh /usr/bin/entrypoint.sh
@@ -86,4 +86,4 @@ EXPOSE 8787
 #ENV USER=coder
 COPY run_simple.sh /usr/run_simple.sh
 
-CMD ["bash","/usr/run_simple.sh"]
+ENTRYPOINT ["bash","/usr/run_simple.sh"]

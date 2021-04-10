@@ -27,5 +27,5 @@ if [ -x "$(command -v shiny-server)" ]; then
 fi
 
 ## configure git not to request password each time
-git config --system credential.helper 'cache --timeout=3600'
+git config --system credential.helper 'cache --timeout=36000'
 git config --system push.default simple

@@ -99,7 +99,7 @@ printf "%s" "$LOGGING" > /etc/rstudio/logging.conf
 
 # install user config initiation script
 cp /installers/userconf.sh /etc/cont-init.d/userconf
-cp installers/pam-helper.sh /usr/lib/rstudio-server/bin/pam-helper
+cp /installers/pam-helper.sh /usr/lib/rstudio-server/bin/pam-helper
 
 ## Rocker's default RStudio settings, for better reproducibility
 
@@ -113,4 +113,4 @@ mkdir -p /home/rstudio/.rstudio/monitored/user-settings \
           > /home/rstudio/.rstudio/monitored/user-settings/user-settings \
   && chown -R rstudio:rstudio /home/rstudio/.rstudio
 
-git config --system credential.helper 'cache --timeout=3600'
+git config --system credential.helper 'cache --timeout=36000'

@@ -17,6 +17,6 @@ fi
 echo "http://localhost:8787/?token=${JUPYTER_TOKEN}"
 echo "http://localhost:8787/\?token\=${JUPYTER_TOKEN}"
 
-rstudio-server start
-cd ~
-bash
+#rstudio-server start
+/usr/lib/rstudio-server/bin/rserver --www-port=8888 --auth-none=1 --server-app-armor-enabled=0
+#bash

@@ -14,4 +14,4 @@ if [ "${DOCKER_USER-}" ] && [ "$DOCKER_USER" != "$USER" ]; then
   USER="$DOCKER_USER"
   sudo sed -i "/rstudio/d" /etc/sudoers.d/nopasswd
 fi
-sudo rstudio-server start
+#sudo rstudio-server start
